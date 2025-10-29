@@ -1,28 +1,29 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./pages/Navigationbar";
 import Dashboard from "./pages/Dashboard";
 import Weather from "./pages/Weather";
 import Expenses from "./pages/Expenses";
+import FarmData from "./pages/FarmData/FarmData";
 import Login from "./pages/Login";
+import Crops from "./pages/FarmData/Crops";
+import Livestock from "./pages/FarmData/Livestock";
+
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-green-50">
-        <nav className="flex justify-around bg-green-700 text-white py-4">
-          <Link to="/" className="font-semibold hover:underline">Dashboard</Link>
-          <Link to="/weather" className="font-semibold hover:underline">Weather</Link>
-          <Link to="/expenses" className="font-semibold hover:underline">Expenses</Link>
-          <Link to="/login" className="font-semibold hover:underline">Login</Link>
-        </nav>
-
-        <div className="p-6">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/weather" element={<Weather />} />
-            <Route path="/expenses" element={<Expenses />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </div>
+      <Navbar />
+      <div className="p-6">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/weather" element={<Weather />} />
+          <Route path="/expenses" element={<Expenses />} />
+          <Route path="/farm-data" element={<FarmData />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/crops" element={<Crops />} />
+          <Route path="/livestock" element={<Livestock />} />
+        </Routes>
       </div>
     </Router>
   );
