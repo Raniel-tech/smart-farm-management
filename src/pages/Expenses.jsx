@@ -4,16 +4,30 @@ function Expenses() {
   const [expenses, setExpenses] = useState([]);
   const [form, setForm] = useState({ item: "", category: "", amount: "", date: "" });
 
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      const querySnapshot = await getDocs(collection(db, "expenses"));
+      const loadedExpenses = [];
+      querySnapshot.forEach(doc => loadedExpenses.push(doc.data()));
+      setExpenses(loadedExpenses);
+    };
+    fetchExpenses();
+  }, []);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.item || !form.amount || !form.date || !form.category) return;
+    
+    await addDoc(collection(db, "expenses"), form);
+
     setExpenses([...expenses, form]);
     setForm({ item: "", category: "", amount: "", date: "" });
   };
+
 
   return (
     <div className="min-h-screen bg-green-50 p-6">

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { db } from "../../firebase";
+import {collection, addDoc, getDocs} from "firebase/firestore";
 
 function Livestock() {
   const [livestock, setLivestock] = useState([]);
@@ -6,7 +8,7 @@ function Livestock() {
   const [quantity, setQuantity] = useState("");
   const [healthStatus, setHealthStatus] = useState("");
 
-  const handleAddLivestock = (e) => {
+  const handleAddLivestock = async (e) => {
     e.preventDefault();
 
     if (!animalType || !quantity || !healthStatus) return;
@@ -18,11 +20,14 @@ function Livestock() {
       healthStatus,
     };
 
+    await addDoc(collection(db, "livestock"), newAnimal);
+
     setLivestock([...livestock, newAnimal]);
     setAnimalType("");
     setQuantity("");
     setHealthStatus("");
   };
+
 
   return (
     <div className="min-h-screen bg-green-50 p-6">

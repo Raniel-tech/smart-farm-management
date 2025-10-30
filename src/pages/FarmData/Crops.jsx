@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { db } from "../../firebase";
+import {collection, addDoc, getDocs} from "firebase/firestore";
 
 function Crops() {
   const [crops, setCrops] = useState([]);
@@ -6,7 +8,17 @@ function Crops() {
   const [plantingDate, setPlantingDate] = useState("");
   const [expectedHarvest, setExpectedHarvest] = useState("");
 
-  const handleAddCrop = (e) => {
+  useEffect(() => {
+    const fetchCrops = async () => {
+      const querySnapshot = await getDocs(collection(db, "crops"));
+      const loadedCrops = [];
+      querySnapshot.forEach(doc => loadedCrops.push(doc.data()));
+      setCrops(loadedCrops);
+    };
+    fetchCrops();
+  }, []);
+
+  const handleAddCrop = async (e) => {
     e.preventDefault();
 
     if (!cropName || !plantingDate || !expectedHarvest) return;
@@ -17,6 +29,8 @@ function Crops() {
       plantingDate,
       expectedHarvest,
     };
+
+    await addDoc(collection(db, "crops"), newCrop);
 
     setCrops([...crops, newCrop]);
     setCropName("");
