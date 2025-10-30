@@ -4,25 +4,20 @@ function Expenses() {
   const [expenses, setExpenses] = useState([]);
   const [form, setForm] = useState({ item: "", category: "", amount: "", date: "" });
 
-  useEffect(() => {
-    const fetchExpenses = async () => {
-      const querySnapshot = await getDocs(collection(db, "expenses"));
-      const loadedExpenses = [];
-      querySnapshot.forEach(doc => loadedExpenses.push(doc.data()));
-      setExpenses(loadedExpenses);
-    };
-    fetchExpenses();
+   useEffect(() => {
+    const storedExpenses = JSON.parse(localStorage.getItem("expenses")) || [];
+    setExpenses(storedExpenses);
   }, []);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  }, [expenses]);
 
-  const handleSubmit = async (e) => {
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.item || !form.amount || !form.date || !form.category) return;
-    
-    await addDoc(collection(db, "expenses"), form);
 
     setExpenses([...expenses, form]);
     setForm({ item: "", category: "", amount: "", date: "" });

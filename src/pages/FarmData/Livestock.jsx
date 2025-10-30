@@ -8,20 +8,20 @@ function Livestock() {
   const [quantity, setQuantity] = useState("");
   const [healthStatus, setHealthStatus] = useState("");
 
-  const handleAddLivestock = async (e) => {
-    e.preventDefault();
+ useEffect(() => {
+    const storedAnimals = JSON.parse(localStorage.getItem("livestock")) || [];
+    setLivestock(storedAnimals);
+  }, []);
 
+  useEffect(() => {
+    localStorage.setItem("livestock", JSON.stringify(livestock));
+  }, [livestock]);
+
+  const handleAddLivestock = (e) => {
+    e.preventDefault();
     if (!animalType || !quantity || !healthStatus) return;
 
-    const newAnimal = {
-      id: Date.now(),
-      animalType,
-      quantity,
-      healthStatus,
-    };
-
-    await addDoc(collection(db, "livestock"), newAnimal);
-
+    const newAnimal = { id: Date.now(), animalType, quantity, healthStatus };
     setLivestock([...livestock, newAnimal]);
     setAnimalType("");
     setQuantity("");
