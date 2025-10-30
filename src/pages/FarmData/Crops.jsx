@@ -9,19 +9,29 @@ function Crops() {
   const [expectedHarvest, setExpectedHarvest] = useState("");
 
   useEffect(() => {
-    const storedCrops = JSON.parse(localStorage.getItem("crops")) || [];
-    setCrops(storedCrops);
+    const fetchCrops = async () => {
+      const querySnapshot = await getDocs(collection(db, "crops"));
+      const loadedCrops = [];
+      querySnapshot.forEach(doc => loadedCrops.push(doc.data()));
+      setCrops(loadedCrops);
+    };
+    fetchCrops();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("crops", JSON.stringify(crops));
-  }, [crops]);
-
-  const handleAddCrop = (e) => {
+  const handleAddCrop = async (e) => {
     e.preventDefault();
+
     if (!cropName || !plantingDate || !expectedHarvest) return;
 
-    const newCrop = { id: Date.now(), cropName, plantingDate, expectedHarvest };
+    const newCrop = {
+      id: Date.now(),
+      cropName,
+      plantingDate,
+      expectedHarvest,
+    };
+
+    await addDoc(collection(db, "crops"), newCrop);
+
     setCrops([...crops, newCrop]);
     setCropName("");
     setPlantingDate("");
